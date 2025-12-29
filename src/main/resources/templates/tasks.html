@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"  data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo application</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.tiny.cloud/1/ymxfda2pi1oprpwq1gyvxi1xn4f2ab1hsqkdgj6f0d8hknnj/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
+    <style>
+        .checkbox{
+        opacity: 0;
+        position: absolute;
+        display:none !important;
+
+        }
+        .checkbox-label{
+        background-color:#111;
+        width:50px;
+        height:26px;
+        border-radius:50px;
+        position:relative;
+        display:flex;
+        padding:5px;
+        justify-content: space-between;
+        align-items: center;
+        }
+        .fa-moon{
+        color:#f1c40f;
+
+              }
+        .fa-sun{
+        color:#f1c40f;
+        }
+        .checkbox-label .ball{
+        background-color:#fff;
+        width:22px;
+        height:22px;
+        position:absolute;
+        left:2px;
+        top:2px;
+        border-radius:50%;
+        transition: transform 0.2s linear;
+        }
+
+        .checkbox:checked + .checkbox-label .ball{
+        transform:translateX(24px);
+        }
+        #checkbox{
+        display:none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="d-flex justify-content-center mt-3">
+    <div class="form-check form-switch">
+        <input class="form-check-input checkbox"  type="checkbox" id="themeSwitch">
+        <label class="form-check-label checkbox-label" for="themeSwitch">
+           <i class="fa-solid fa-moon"></i>
+            <i class="fa-solid fa-sun"></i>
+            <span class="ball"></span>
+        </label>
+    </div>
+</div>
+
+
+<div class="container">
+    <h1 class="mt-5 text-center"> Todo application</h1>
+    <form action="/" method="POST" class="row mt-3">
+        <div class="col-md-10" >
+<!--            contenteditable="true" think and add allows to edit might break-->
+            <textarea  class="form-control form-control-lg" type="text" name="title" placeholder="Add  a new task" required="required" rows="2" cols="50" id="editor"> </textarea>
+
+
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary and btn-block">Add</button>
+        </div>
+
+    </form>
+    <div class="mt-4">
+    <th:block th:each="task : ${tasks}">
+        <div class="card mb-2">
+            <div class="card-body d-flex justify-content-between align-items-center ">
+            <span th:classappend="${task.completed} ? 'text-decoration-line-through' : ''"
+                  th:utext="${task.title}">Task title</span>
+                <div>
+                    <a th:href="@{/{id}/toggle(id=${task.id})}" class="btn btn-outline-secondary btn-sm">Toggle</a>
+                    <a th:href="@{/{id}/delete(id=${task.id})}" class="btn btn-outline-danger btn-sm ml -2">Delete</a>
+                </div>
+            </div>
+            </div>
+    </th:block>
+    </div>
+</div>
+<script>
+    const themeSwitch = document.getElementById("themeSwitch");
+    const html = document.documentElement;
+
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme === "dark") {
+        html.setAttribute("data-bs-theme", "dark");
+        themeSwitch.checked = true;
+    }
+
+    themeSwitch.addEventListener("change", function () {
+        html.setAttribute("data-bs-theme", this.checked ? "dark" : "light");
+        localStorage.setItem("theme", this.checked ? "dark" : "light");
+    });
+
+
+tinymce.init({
+        selector: '#editor'
+      });
+</script>
+</body>
+</html>
